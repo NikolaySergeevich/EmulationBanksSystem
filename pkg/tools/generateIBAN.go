@@ -6,8 +6,12 @@ import (
 	"time"
 )
 
+type Iban struct {
+	Iban string
+}
+
 // Генерирует уникальный номер IBAN с указанным форматом.
-func GenerateIBAN() string {
+func GenerateIBAN() Iban {
 	const prefix = "BY"
 	const length = 28
 
@@ -39,5 +43,5 @@ func GenerateIBAN() string {
 	}
 	wg.Wait()
 	iban := prefix + string(ibanOne) + string(ibanTwo) + string(ibanThree)
-	return iban
+	return Iban{Iban: iban}
 }

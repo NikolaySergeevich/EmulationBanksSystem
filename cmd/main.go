@@ -3,68 +3,74 @@ package main
 import (
 	"context"
 	"fmt"
-	"sync"
 	"log"
 	"os/signal"
+	"sync"
 	"syscall"
-
-	// "testbanc/pkg/tools"
-	// "testbanc/pkg/account"
 	pay "testbanc/pkg/paymentSystem"
 	"testbanc/pkg/repository"
 )
-
-
-
-
 
 func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
 	var wg sync.WaitGroup
 	db := repository.NewLocalDB()
-	// fmt.Println(db)
 	ps, err := pay.NewPaymentSystem(ctx, db)
-	// fmt.Println(&ps)
-	if err != nil{
+
+	if err != nil {
 		log.Fatal(err)
 	}
+
+	//Создание десяти счетов
 	for i := 0; i < 10; i++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			if err := ps.CreateAccount(ctx); err != nil{
+			if err := ps.CreateAccount(ctx); err != nil {
 				log.Println(err)
 			}
 		}()
 	}
 	wg.Wait()
 
+	// Демонстрация получения номеров счетов страны и уничтожения денег
+	ibanCountry, err := ps.GetCountryIBAN(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(ibanCountry)
+	ibanDestruction, err := ps.GetDestructionIBAN(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(ibanDestruction)
+	// Эмиссия
+	if err := ps.EmitMoney(ctx, 2300); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Эмиссия успешно проведена")
+	// Уничтожение денег
+	if err := ps.DestroyMoney(ctx, ibanCountry, 300); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Указанная сумма успешна уничтожена")
+	// Перевод денег с одного счёта на другой
+	if err := ps.TransferMoney(ctx, ibanCountry, ibanDestruction, 200); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Указанная сумма успешна переведена первым способом")
+
+	// Перевод денег с одного счёта на другой с JSON функциями
+	if err := ps.TransferMoneyJSON(ctx, ibanCountry, ibanDestruction, 100); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Указанная сумма успешна переведена вторым способом")
+
+	// Полуение всех счетов, включая служебыне
 	allAcc, err := ps.GetAccounts(ctx)
-	if err != nil{
+	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println(allAcc)
-	// // Emit money
-	// ps.EmitMoney(1000)
-
-	// for i := 0; i < 10; i++ {
-	// 	ps.CreateAccount()
-	// }
-
-
-	
-	// accounts, err := ps.GetAccounts()
-	// if err != nil{
-	// 	log.Println(err)
-	// }else {
-	// 	fmt.Println(accounts)
-	// }
-	
-
-	// // Transfer money
-	// ps.TransferMoney("state_emission", "state_destruction", 500)
-
-	// // Print account details
-	// fmt.Println(ps.GetAccounts()
 }

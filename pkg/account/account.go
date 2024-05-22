@@ -2,12 +2,13 @@ package account
 
 import (
 	"sync"
+	"testbanc/pkg/tools"
 	"time"
 )
 
 // Банковский счет.
 type Account struct {
-	AccountNumber string
+	AccountNumber tools.Iban
 	Mu            sync.Mutex
 	Balance       float64
 	Active        bool
