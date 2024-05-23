@@ -4,6 +4,7 @@ import (
 	"math/rand"
 	"sync"
 	"time"
+	"unicode/utf8"
 )
 
 type Iban struct {
@@ -25,7 +26,7 @@ func GenerateIBAN() Iban {
 	var ibanOne []byte
 	var ibanTwo []byte
 	var ibanThree []byte
-	for i := 0; i < length-len(prefix); i++ {
+	for i := utf8.RuneCountInString(prefix); i < length - utf8.RuneCountInString(prefix); i++ {
 		wg.Add(1)
 		go func(letter string, number string, i int) {
 			mu.Lock()
