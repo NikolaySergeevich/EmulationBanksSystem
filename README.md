@@ -22,4 +22,4 @@
 ![](scrin.png)
 
 **Ссылка на онлайн компилятор**
-[COD](https://goplay.space/#Y8Qk9cMcGn7)
+[COD](https://goplay.space/#j-WnRlefcsE)
