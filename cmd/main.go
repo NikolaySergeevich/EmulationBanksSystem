@@ -55,6 +55,13 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Println("Указанная сумма успешна уничтожена")
+	//Пример неудачного уничтожения денег
+	if err := ps.DestroyMoney(ctx, "BY29JYEI0873459522488868084694", 300); err != nil {
+		log.Println(err)
+	}
+	if err := ps.DestroyMoney(ctx, ibanCountry, 300000); err != nil {
+		log.Println(err)
+	}
 	// Перевод денег с одного счёта на другой
 	if err := ps.TransferMoney(ctx, ibanCountry, ibanDestruction, 200); err != nil {
 		log.Fatal(err)
@@ -67,6 +74,16 @@ func main() {
 	}
 	fmt.Println("Указанная сумма успешна переведена вторым способом")
 
+	// Неудачные переводы денег с одгого счёта на другой
+	if err := ps.TransferMoney(ctx, "BY29JYEI0873459522488868084694", ibanDestruction, 200); err != nil {
+		log.Println(err)
+	}
+	if err := ps.TransferMoney(ctx, ibanCountry, "BY29JYEI0873459522488868084694", 200); err != nil {
+		log.Println(err)
+	}
+	if err := ps.TransferMoneyJSON(ctx, ibanCountry, ibanDestruction, 554545); err != nil {
+		log.Println(err)
+	}
 	// Полуение всех счетов, включая служебыне
 	allAcc, err := ps.GetAccounts(ctx)
 	if err != nil {

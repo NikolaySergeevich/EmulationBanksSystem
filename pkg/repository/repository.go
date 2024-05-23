@@ -14,7 +14,7 @@ type Repository interface{
 	TransferMoney(ctx context.Context, fromAccount, toAccount *account.Account, amount float64) error// +
 	TransferMoneyJSON(ctx context.Context, transfer []byte) error
 	FindAccountIBAN(ctx context.Context, iban string) (*account.Account, error)
-	GetAllAccount(ctx context.Context) ([]account.GetAccount, error)//+
+	GetAllAccount(ctx context.Context) ([]*account.GetAccount, error)//+
 	GetCountryIBAN(ctx context.Context) (tools.Iban, error)//+
 	GetDestroyIBAN(ctx context.Context) (tools.Iban, error)//+
 }

@@ -140,7 +140,7 @@ func (ps *PaymentSystem) GetAccounts(ctx context.Context) (accounts string, err 
 		return "", err
 	}
 
-	jsonData, err := json.Marshal(acc)
+	jsonData, err := json.Marshal(&acc)
 	if err != nil{
 		return accounts, fmt.Errorf("get all accounts: %w", err)
 	}

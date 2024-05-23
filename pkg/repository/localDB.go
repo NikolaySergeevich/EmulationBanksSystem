@@ -196,16 +196,16 @@ func (l *LocalDB) FindAccountIBAN(ctx context.Context, iban string) (*account.Ac
 }
 
 // Вернёт список со всеми имеющимися счетами в системе, включая служебные. Номер, остато на счёте, статус счёта.
-func (l *LocalDB) GetAllAccount(ctx context.Context) ([]account.GetAccount, error) {
-	res := make([]account.GetAccount, 0, len(l.Accounts)+2)
-	res = append(res, account.GetAccount{AccountNumber: l.CountryAccount.AccountNumber.Iban, Balance: l.CountryAccount.Balance, Active: l.CountryAccount.Active})
-	res = append(res, account.GetAccount{AccountNumber: l.DestructionAccount.AccountNumber.Iban, Balance: l.DestructionAccount.Balance, Active: l.DestructionAccount.Active})
+func (l *LocalDB) GetAllAccount(ctx context.Context) ([]*account.GetAccount, error) {
+	res := make([]*account.GetAccount, 0, len(l.Accounts)+2)
+	res = append(res, &account.GetAccount{AccountNumber: l.CountryAccount.AccountNumber.Iban, Balance: l.CountryAccount.Balance, Active: l.CountryAccount.Active})
+	res = append(res, &account.GetAccount{AccountNumber: l.DestructionAccount.AccountNumber.Iban, Balance: l.DestructionAccount.Balance, Active: l.DestructionAccount.Active})
 
 	for _, v := range l.Accounts {
 		if v.AccountNumber.Iban == l.CountryAccount.AccountNumber.Iban || v.AccountNumber.Iban == l.DestructionAccount.AccountNumber.Iban {
 			continue
 		}
-		res = append(res, account.GetAccount{AccountNumber: v.AccountNumber.Iban, Balance: v.Balance, Active: v.Active})
+		res = append(res, &account.GetAccount{AccountNumber: v.AccountNumber.Iban, Balance: v.Balance, Active: v.Active})
 	}
 
 	if len(res) != len(l.Accounts) {
