@@ -57,7 +57,6 @@ func (l *LocalDB) AddAccount(ctx context.Context, account *account.Account) erro
 		l.Accounts[account.AccountNumber.Iban] = account
 		return nil
 	}
-	fmt.Println(len(l.Accounts))
 	return errors.New("db: account with such a number already exists")
 }
 
@@ -86,14 +85,13 @@ func (l *LocalDB) GetDestroyIBAN(ctx context.Context) (tools.Iban, error) {
 // Выполняет эмиссию с государственным счётом
 func (l *LocalDB) Emition(ctx context.Context, count float64) error {
 	l.Mu.Lock()
-	defer l.Mu.Unlock()
 	defer func() {
 		if r := recover(); r != nil {
 			log.Println("the issue was not carried out")
 			l.Mu.Unlock()
 		}
+		l.Mu.Unlock()
 	}()
-
 	l.CountryAccount.Balance += count
 	l.CountryAccount.UpdatedAt = time.Now()
 	return nil
